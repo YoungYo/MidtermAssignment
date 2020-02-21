@@ -64,6 +64,7 @@ int main(int argc, char **argv) {
                 error(1, errno, "error read");
             } else if (n == 0) {
                 printf("Client closed\n");
+                close(connfd);
                 break;
             }
             message[n] = 0;

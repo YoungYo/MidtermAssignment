@@ -53,6 +53,7 @@ int main(int argc, char **argv) {
                 error(1, errno, "read error");
             } else if (n == 0) {
                 error(1, 0, "server terminated \n");
+                break;
             }
             recv_line[n] = 0;
             fputs(recv_line, stdout);
@@ -75,42 +76,16 @@ int main(int argc, char **argv) {
                 if (i == COMMAND_COUNT){
                     if (strncmp(send_line, "quit", 4) == 0){
                         FD_CLR(0, &allreads);
-                        if (shutdown(socket_fd, 2)) {
+                        if (shutdown(socket_fd, 1)) {
                             error(1, errno, "shutdown failed");
                         }
-                    } else{
+                    } else {
                         printf("Invalid input: %s\n", send_line);
                         continue;
                     }
                 }
-/*
-                if (strncmp(send_line, "shutdown", 8) == 0) {
-                    FD_CLR(0, &allreads);
-                    if (shutdown(socket_fd, 1)) {
-                        error(1, errno, "shutdown failed");
-                    }
-                } else if (strncmp(send_line, "close", 5) == 0) {
-                    FD_CLR(0, &allreads);
-                    if (close(socket_fd)) {
-                        error(1, errno, "close failed");
-                    }
-                    sleep(6);
-                    exit(0);
-                } else {
-                    int i = strlen(send_line);
-                    if (send_line[i - 1] == '\n') {
-                        send_line[i - 1] = 0;
-                    }
-
-                    printf("now sending %s\n", send_line);
-                    size_t rt = write(socket_fd, send_line, strlen(send_line));
-                    if (rt < 0) {
-                        error(1, errno, "write failed ");
-                    }
-                    printf("send bytes: %zu \n", rt);
-                }
-*/
             }
         }
     }
+    exit(0);
 }
